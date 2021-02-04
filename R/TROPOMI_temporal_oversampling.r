@@ -39,9 +39,9 @@ for (iRegion in 1:length(to.proc)){
         stuff <- eval(parse(text=to.proc[iRegion]))
 
         #all.days <- seq(stuff$init.date-dDay,stuff$init.date+dDay,by="1 day")
-        all.days <- seq(as.Date(stuff$doy_range[1],origin=paste0(aYear,"-01-01")),
-                        as.Date(stuff$doy_range[2],origin=paste0(aYear,"-01-01")),
-                        by="1 day")
+        all.days <- seq(as.Date(stuff$doy_range[1]-1,origin=paste0(aYear,"-01-01")),
+                        as.Date(stuff$doy_range[2]-1,origin=paste0(aYear,"-01-01")),
+                        by="1 day") ### -1 is necessary for getting the doy right!
 
 
         out.file <- paste0("/net/fluo/data1/ftp/data/tropomi/XYZT_4Andy/",stuff$name,"_",min(all.days),"--",max(all.days),"_",target.resolution,"deg.tif")

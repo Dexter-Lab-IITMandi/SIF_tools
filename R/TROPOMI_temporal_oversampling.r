@@ -8,7 +8,6 @@ library(solaR)
 library(colorspace)
 library(viridis)
 library(fields)
-
 setwd("/home/pkoehler/Documents/Caltech/git_stuff/SIF_tools/R")
 source("intersensor-comparison_helpers.r")
 
@@ -19,25 +18,31 @@ source("intersensor-comparison_helpers.r")
 #return.date.seq <- function(init.date,delta.day) seq(init.date-delta.day,init.date+delta.day,by="1 day")
 # all.days <- unlist(lapply(years, function(a,...) return.date.seq(as.Date(paste0(a,init.date)),dDay)))
 
-years     <- "2018"
+allYears     <- c("2018","2019","2020")
 
 ### list of regions to process:
-tan.w  <- list(box = c(-149.3,-146.9,64.2,65.2),init.date=as.Date("2018-07-06"),name="Tanana_West")
-tan.e  <- list(box=c(-148.0,-145.6,63.9,64.9),init.date=as.Date("2018-07-06"), name="Tanana_East")
-brooks <- list(box=c(-151.1,-148.3,67.5,68.5),init.date=as.Date("2018-07-08"), name="Brooks")
+tan.w  <- list(box = c(-149.3,-146.9,64.2,65.2),doy_range=c(183,191) ,name="Tanana_West")#,init.date=as.Date("2018-07-06")
+tan.e  <- list(box=c(-148.0,-145.6,63.9,64.9),doy_range=c(183,191), name="Tanana_East")#,init.date=as.Date("2018-07-06")
+brooks <- list(box=c(-151.1,-148.3,67.5,68.5),doy_range=c(185,193), name="Brooks")#,init.date=as.Date("2018-07-08")
 #####################
 
-deltaDay <- c(2,4)
+#deltaDay <- c(2,4)
 to.proc <- c("tan.w","tan.e","brooks")
 target.resolution <- 0.01
 
 for (iRegion in 1:length(to.proc)){
-    for (dDay in deltaDay){
+    #for (dDay in deltaDay){
+    for (aYear in allYears){
 
 
         ## create filename right away
         stuff <- eval(parse(text=to.proc[iRegion]))
-        all.days <- seq(stuff$init.date-dDay,stuff$init.date+dDay,by="1 day")
+
+        #all.days <- seq(stuff$init.date-dDay,stuff$init.date+dDay,by="1 day")
+        all.days <- seq(as.Date(stuff$doy_range[1],origin=paste0(aYear,"-01-01")),
+                        as.Date(stuff$doy_range[2],origin=paste0(aYear,"-01-01")),
+                        by="1 day")
+
 
         out.file <- paste0("/net/fluo/data1/ftp/data/tropomi/XYZT_4Andy/",stuff$name,"_",min(all.days),"--",max(all.days),"_",target.resolution,"deg.tif")
 
